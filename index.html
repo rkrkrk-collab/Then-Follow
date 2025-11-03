@@ -3350,12 +3350,12 @@
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label class="form-label">시작 월</label>
+                        <label class="form-label">시작월</label>
                         <input type="month" class="form-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-300" id="start-date" value="2020-01">
                         <small id="start-date-hint" class="hint-text">해당 월의 마지막 영업일 기준</small>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">종료 월</label>
+                        <label class="form-label">종료월</label>
                         <input type="month" class="form-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-300" id="end-date" value="2025-03">
                         <small id="end-date-hint" class="hint-text">해당 월의 마지막 영업일 기준</small>
                     </div>
@@ -4254,14 +4254,14 @@
 
                 updateDataStatus();
 
-                // 종료 월을 최신 데이터 월로 자동 설정
+                // 종료월을 최신 데이터 월로 자동 설정
                 updateEndDateToLatest();
             } catch (error) {
                 console.error('로컬 데이터 로드 실패:', error);
             }
         }
 
-        // 종료 월을 최신 데이터로 업데이트
+        // 종료월을 최신 데이터로 업데이트
         function updateEndDateToLatest() {
             const endDateInput = document.getElementById('end-date');
             if (endDateInput && Object.keys(localETFData).length > 0) {
@@ -4536,7 +4536,7 @@
                     saveLocalData();
                     updateDataStatus();
 
-                    // 종료 월을 최신 데이터 월로 자동 업데이트
+                    // 종료월을 최신 데이터 월로 자동 업데이트
                     updateEndDateToLatest();
                     
                     const summary = [];
@@ -6015,7 +6015,7 @@
 
             // 시작일이 종료일보다 늦은 경우
             if (start >= end) {
-                showNotification('시작 월은 종료 월보다 빨라야 합니다.', 'warning');
+                showNotification('시작월은 종료월보다 빨라야 합니다.', 'warning');
                 // 종료월을 시작월 + 1년으로 자동 조정
                 const newEndDate = new Date(start);
                 newEndDate.setFullYear(start.getFullYear() + 1);
@@ -6027,14 +6027,14 @@
 
             // 시작일이 너무 미래인 경우
             if (start > today) {
-                showNotification('시작 월은 오늘 이전이어야 합니다.', 'warning');
+                showNotification('시작월은 오늘 이전이어야 합니다.', 'warning');
                 startDateInput.value = '2020-01';
                 return;
             }
 
             // 종료일이 너무 미래인 경우
             if (end > today) {
-                showNotification('종료 월은 오늘 이전이어야 합니다.', 'warning');
+                showNotification('종료월은 오늘 이전이어야 합니다.', 'warning');
                 const currentYear = today.getFullYear();
                 const currentMonth = String(today.getMonth() + 1).padStart(2, '0');
                 endDateInput.value = `${currentYear}-${currentMonth}`;
