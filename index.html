@@ -2411,6 +2411,62 @@
             flex-shrink: 0;
         }
 
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .slider.round {
+            border-radius: 24px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
         .user-profile {
             display: flex;
             align-items: center;
@@ -3007,7 +3063,7 @@
 
     </style>
 </head>
-<body>
+<body class="light-mode">
 
     <!-- 햄버거 메뉴 버튼 -->
     <div class="menu-button" id="menu-button" onclick="toggleMenu()">
@@ -3042,13 +3098,61 @@
             </div>
             
             <div class="data-management-section">
-                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-2">통합 데이터 업로드</h4>
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Google Sheets 연동 설정</h4>
+                <div class="sheets-config-area">
+                    <div class="form-group">
+                        <label class="form-label">Google Sheets 공유 링크</label>
+                        <input type="text"
+                               class="form-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-300"
+                               id="sheets-url"
+                               placeholder="https://docs.google.com/spreadsheets/d/...">
+                        <small class="hint-text">Google Sheets를 '링크가 있는 모든 사용자'로 공유 설정해주세요</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">GID (선택사항)</label>
+                        <input type="text"
+                               class="form-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-300"
+                               id="sheets-gid"
+                               placeholder="0">
+                        <small class="hint-text">특정 시트만 가져올 경우 GID 입력 (기본값: 0)</small>
+                    </div>
+
+                    <div class="sheets-config-buttons" style="display: flex; gap: 10px; margin-top: 16px;">
+                        <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-all duration-300"
+                                onclick="loadFromGoogleSheets()">
+                            데이터 불러오기
+                        </button>
+                        <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 transition-all duration-300"
+                                onclick="saveGoogleSheetsConfig()">
+                            설정 저장
+                        </button>
+                    </div>
+
+                    <div class="sync-status" style="margin-top: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">자동 동기화</label>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <label class="switch">
+                                    <input type="checkbox" id="auto-sync-toggle" onchange="toggleAutoSync(this.checked)">
+                                    <span class="slider round"></span>
+                                </label>
+                                <span class="text-sm text-gray-600 dark:text-gray-400" id="sync-status-text">비활성화</span>
+                            </div>
+                            <small class="hint-text">활성화 시 5분마다 자동으로 Google Sheets 데이터를 동기화합니다</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-management-section">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-2">엑셀 파일 업로드 (백업용)</h4>
                 <div class="upload-area" id="unified-upload-area">
                     <input type="file" id="unified-file-input" accept=".xlsx,.xls" style="display: none;" onchange="handleUnifiedFile(event)">
                     <div class="upload-placeholder" onclick="document.getElementById('unified-file-input').click()">
                         <div class="upload-icon">📊</div>
                         <div class="upload-text">통합 데이터 엑셀 파일을 선택하세요</div>
-                        <div class="upload-subtext">전략 정보, 자산 배분, ETF 가격 데이터를 포함한 하나의 파일</div>
+                        <div class="upload-subtext">전략 정보, 자산 배분, ETF 가격 데이터를 포함한 하나의 파일 (백업 또는 오프라인 용도)</div>
                     </div>
                 </div>
             </div>
@@ -3350,12 +3454,12 @@
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label class="form-label">시작월</label>
+                        <label class="form-label">시작 월</label>
                         <input type="month" class="form-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-300" id="start-date" value="2020-01">
                         <small id="start-date-hint" class="hint-text">해당 월의 마지막 영업일 기준</small>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">종료월</label>
+                        <label class="form-label">종료 월</label>
                         <input type="month" class="form-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-300" id="end-date" value="2025-03">
                         <small id="end-date-hint" class="hint-text">해당 월의 마지막 영업일 기준</small>
                     </div>
@@ -3587,7 +3691,8 @@
         let comparisonChart;
         let benchmarkChart;
         let pieCharts = [];
-        let isDarkMode = true;
+        // ⭐ 초기값을 body의 클래스로부터 결정 (라이트모드가 기본)
+        let isDarkMode = !document.body.classList.contains('light-mode');
         let favoriteStrategies = [];
         let currentPeriod = 3;
         let chartData = { labels: [], datasets: [] };
@@ -3605,6 +3710,29 @@
             rebalancingDay: 'month-end',      // 월말 리밸런싱
             executionTime: 'close'            // 장 마감 시
         };
+
+        // 🔗 Google Sheets 연동 설정
+        const GOOGLE_SHEETS_CONFIG = {
+            // Google Sheets ID (URL에서 /d/ 다음 부분)
+            spreadsheetId: '1WaPPLxqlXbFBa4BnDAaZridaxgNR96OmQEqyP29M__w',
+
+            // Google Sheets API Key (https://console.cloud.google.com/apis/credentials 에서 생성)
+            // 공개 스프레드시트 읽기용 API 키 (제한: HTTP referrer)
+            apiKey: 'AIzaSyCbAcczDGvOeSINXJC8SLC1nuAeVoyBC2g',
+
+            // 각 시트 이름 및 GID
+            sheets: {
+                strategies: 'Strategies',      // Strategies 시트 이름 (GID: 2093528592)
+                allocations: 'Allocations',    // Allocations 시트 이름 (GID: 730097820)
+                etf_prices: 'ETF_Data'         // ETF_Data 시트 이름 (GID: 0)
+            }
+        };
+
+        // Google Sheets API v4 URL 생성 함수 (CORS 문제 해결)
+        function getGoogleSheetsAPIUrl(sheetName, range = '') {
+            const fullRange = range ? `${sheetName}!${range}` : sheetName;
+            return `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEETS_CONFIG.spreadsheetId}/values/${fullRange}?key=${GOOGLE_SHEETS_CONFIG.apiKey}`;
+        }
 
         // ETF 정보 데이터
         const etfInfo = {
@@ -3627,8 +3755,8 @@
                 description: 'SPY와 동일하게 S&P 500 지수를 추종하지만 운용 보수가 더 낮습니다. 장기 투자자에게 유리한 선택입니다.'
             },
             'VXUS': {
-                name: 'Vanguard 해외 주식',
-                category: '해외 주식',
+                name: 'Vanguard 미국 외 전 세계 주식',
+                category: '미국 외 전 세계 주식',
                 expense: '0.07%',
                 description: '미국을 제외한 전 세계 선진국과 신흥국 주식에 투자합니다. 지역 분산을 통해 미국 시장 리스크를 헷지할 수 있습니다.'
             },
@@ -3673,6 +3801,24 @@
                 category: '부동산',
                 expense: '0.12%',
                 description: '미국 부동산 투자 신탁(REITs)에 투자합니다. 배당 수익률이 높고 인플레이션 헷지 효과가 있으며, 주식/채권과 상관관계가 낮습니다.'
+            },
+            'VEA': {
+                name: 'Vanguard 선진국 주식',
+                category: '선진국 주식',
+                expense: '0.05%',
+                description: '미국을 제외한 캐나다, 유럽, 일본, 호주 등 선진국 주식 시장에 투자합니다. 약 4,000개 이상의 종목에 분산 투자되어 미국 외 선진국 경제 성장을 따라갑니다.'
+            },
+            'VWO': {
+                name: 'Vanguard 신흥국 주식',
+                category: '신흥국 주식',
+                expense: '0.08%',
+                description: '중국, 인도, 브라질, 대만 등 신흥국 주식 시장에 투자합니다. 높은 성장 잠재력을 가지지만 변동성이 크며, 선진국 대비 높은 리스크-리턴 특성을 보입니다.'
+            },
+            'BIL': {
+                name: 'SPDR 1-3개월 단기 국채',
+                category: '초단기 국채',
+                expense: '0.14%',
+                description: '만기 1-3개월의 미국 초단기 국채(T-Bill)에 투자합니다. 거의 현금과 유사한 안정성을 제공하며, 금리 변동에 거의 영향을 받지 않아 안전자산으로 활용됩니다.'
             }
         };
 
@@ -4211,6 +4357,251 @@
         });
 
         // 가장 최근 데이터가 있는 월 찾기
+        // 📊 Google Sheets 데이터 로드 함수 (API v4 사용 - CORS 문제 해결)
+        async function loadDataFromGoogleSheets() {
+            console.log('🔄 Google Sheets에서 데이터 로드 시작... (API v4)');
+
+            // API 키 확인
+            if (!GOOGLE_SHEETS_CONFIG.apiKey || GOOGLE_SHEETS_CONFIG.apiKey === 'AIzaSyBJrLY_example_YOUR_API_KEY_HERE') {
+                console.log('⚠️ Google Sheets API Key가 설정되지 않았습니다. localStorage 데이터를 사용합니다.');
+                loadLocalData();
+                return;
+            }
+
+            try {
+                // 각 시트에서 JSON 데이터 로드 (병렬 처리) - Google Sheets API v4
+                const [strategiesData, allocationsData, etfPricesData] = await Promise.all([
+                    fetch(getGoogleSheetsAPIUrl(GOOGLE_SHEETS_CONFIG.sheets.strategies))
+                        .then(r => r.json()),
+                    fetch(getGoogleSheetsAPIUrl(GOOGLE_SHEETS_CONFIG.sheets.allocations))
+                        .then(r => r.json()),
+                    fetch(getGoogleSheetsAPIUrl(GOOGLE_SHEETS_CONFIG.sheets.etf_prices))
+                        .then(r => r.json())
+                ]);
+
+                // JSON 파싱 및 데이터 구조 변환
+                const newStrategies = parseStrategiesJSON(strategiesData);
+                const allocations = parseAllocationsJSON(allocationsData);
+                const newETFData = parseETFPricesJSON(etfPricesData);
+
+                // Allocations를 Strategies에 병합
+                Object.keys(allocations).forEach(strategyId => {
+                    if (newStrategies[strategyId]) {
+                        newStrategies[strategyId].etfs = allocations[strategyId];
+                        newStrategies[strategyId].allocation = allocations[strategyId];
+                    }
+                });
+
+                // 전역 변수 업데이트
+                localStrategies = newStrategies;
+                window.strategies = localStrategies;
+                localETFData = newETFData;
+
+                // localStorage에 백업 저장
+                saveLocalData();
+                updateDataStatus();
+                updateEndDateToLatest();
+
+                console.log(`✅ Google Sheets 데이터 로드 완료: ${Object.keys(newStrategies).length}개 전략, ${Object.keys(newETFData).length}개 ETF`);
+                showNotification(`Google Sheets 데이터 로드 완료: ${Object.keys(newStrategies).length}개 전략, ${Object.keys(newETFData).length}개 ETF`, 'success');
+
+            } catch (error) {
+                console.error('❌ Google Sheets 로드 실패:', error);
+                console.log('💾 localStorage 데이터로 폴백합니다...');
+                loadLocalData();
+            }
+        }
+
+        // JSON 파싱 함수 - Strategies 시트 (Google Sheets API v4)
+        function parseStrategiesJSON(data) {
+            if (!data.values || data.values.length < 2) {
+                console.warn('⚠️ Strategies 시트가 비어있습니다.');
+                return {};
+            }
+
+            const [headers, ...rows] = data.values;
+            const strategies = {};
+
+            rows.forEach(row => {
+                if (!row[0]) return; // 빈 행 건너뛰기
+
+                const strategyId = row[headers.indexOf('id')];
+                strategies[strategyId] = {
+                    name: row[headers.indexOf('name')] || '',
+                    creator: row[headers.indexOf('creator')] || '',
+                    description: row[headers.indexOf('description')] || '',
+                    rebalancing: row[headers.indexOf('rebalancing')] || 'quarterly',
+                    color: row[headers.indexOf('color')] || '#3b82f6',
+                    minStartDate: row[headers.indexOf('min_start_date')] || null,
+                    dataAvailableFrom: row[headers.indexOf('data_available_from')] || null,
+                    etfs: {},
+                    allocation: {}
+                };
+            });
+
+            return strategies;
+        }
+
+        // JSON 파싱 함수 - Allocations 시트 (Google Sheets API v4)
+        function parseAllocationsJSON(data) {
+            if (!data.values || data.values.length < 2) {
+                console.warn('⚠️ Allocations 시트가 비어있습니다.');
+                return {};
+            }
+
+            const [headers, ...rows] = data.values;
+            const allocations = {};
+
+            rows.forEach(row => {
+                if (!row[0]) return; // 빈 행 건너뛰기
+
+                const strategyId = row[headers.indexOf('strategy_id')];
+                const symbol = row[headers.indexOf('symbol')];
+                const weight = parseFloat(row[headers.indexOf('weight')]);
+
+                if (!allocations[strategyId]) {
+                    allocations[strategyId] = {};
+                }
+                allocations[strategyId][symbol] = weight;
+            });
+
+            return allocations;
+        }
+
+        // JSON 파싱 함수 - ETF_Data 시트 (Google Sheets API v4)
+        function parseETFPricesJSON(data) {
+            if (!data.values || data.values.length < 2) {
+                console.warn('⚠️ ETF_Data 시트가 비어있습니다.');
+                return {};
+            }
+
+            const [headers, ...rows] = data.values;
+            const etfData = {};
+
+            rows.forEach(row => {
+                if (!row[0]) return; // 빈 행 건너뛰기
+
+                const symbol = row[headers.indexOf('symbol')];
+                const date = row[headers.indexOf('date')];
+                const price = parseFloat(row[headers.indexOf('price')]);
+
+                if (!etfData[symbol]) {
+                    etfData[symbol] = [];
+                }
+
+                etfData[symbol].push({ date, price });
+            });
+
+            // 각 ETF별로 날짜순 정렬
+            Object.keys(etfData).forEach(symbol => {
+                etfData[symbol].sort((a, b) => new Date(a.date) - new Date(b.date));
+            });
+
+            return etfData;
+        }
+
+        // CSV 파싱 함수 - Strategies 시트
+        function parseStrategiesCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace(/['"]/g, ''));
+            const strategies = {};
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                if (!values[0]) continue;
+
+                const strategyId = values[headers.indexOf('id')];
+                strategies[strategyId] = {
+                    name: values[headers.indexOf('name')],
+                    creator: values[headers.indexOf('creator')],
+                    description: values[headers.indexOf('description')],
+                    rebalancing: values[headers.indexOf('rebalancing')],
+                    color: values[headers.indexOf('color')],
+                    minStartDate: values[headers.indexOf('min_start_date')] || null,
+                    dataAvailableFrom: values[headers.indexOf('data_available_from')] || null,
+                    etfs: {},
+                    allocation: {}
+                };
+            }
+
+            return strategies;
+        }
+
+        // CSV 파싱 함수 - Allocations 시트
+        function parseAllocationsCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace(/['"]/g, ''));
+            const allocations = {};
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                if (!values[0]) continue;
+
+                const strategyId = values[headers.indexOf('strategy_id')];
+                const symbol = values[headers.indexOf('symbol')];
+                const weight = parseFloat(values[headers.indexOf('weight')]);
+
+                if (!allocations[strategyId]) {
+                    allocations[strategyId] = {};
+                }
+                allocations[strategyId][symbol] = weight;
+            }
+
+            return allocations;
+        }
+
+        // CSV 파싱 함수 - ETF_Data 시트
+        function parseETFPricesCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace(/['"]/g, ''));
+            const etfData = {};
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                if (!values[0]) continue;
+
+                const symbol = values[headers.indexOf('symbol')];
+                const date = values[headers.indexOf('date')];
+                const price = parseFloat(values[headers.indexOf('price')]);
+
+                if (!etfData[symbol]) {
+                    etfData[symbol] = [];
+                }
+
+                etfData[symbol].push({ date, price });
+            }
+
+            // 각 ETF별로 날짜순 정렬
+            Object.keys(etfData).forEach(symbol => {
+                etfData[symbol].sort((a, b) => new Date(a.date) - new Date(b.date));
+            });
+
+            return etfData;
+        }
+
+        // CSV 라인 파싱 (쉼표 처리 - 따옴표 내부 쉼표 무시)
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim().replace(/^["']|["']$/g, ''));
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+
+            result.push(current.trim().replace(/^["']|["']$/g, ''));
+            return result;
+        }
+
         function getLatestDataMonth() {
             let latestDate = null;
 
@@ -4254,14 +4645,14 @@
 
                 updateDataStatus();
 
-                // 종료월을 최신 데이터 월로 자동 설정
+                // 종료 월을 최신 데이터 월로 자동 설정
                 updateEndDateToLatest();
             } catch (error) {
                 console.error('로컬 데이터 로드 실패:', error);
             }
         }
 
-        // 종료월을 최신 데이터로 업데이트
+        // 종료 월을 최신 데이터로 업데이트
         function updateEndDateToLatest() {
             const endDateInput = document.getElementById('end-date');
             if (endDateInput && Object.keys(localETFData).length > 0) {
@@ -4536,7 +4927,7 @@
                     saveLocalData();
                     updateDataStatus();
 
-                    // 종료월을 최신 데이터 월로 자동 업데이트
+                    // 종료 월을 최신 데이터 월로 자동 업데이트
                     updateEndDateToLatest();
                     
                     const summary = [];
@@ -4709,6 +5100,345 @@
             }
         }
 
+        // ========== Google Sheets Integration ==========
+        let autoSyncInterval = null;
+
+        function extractSpreadsheetId(url) {
+            // Extract spreadsheet ID from Google Sheets URL
+            const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+            return match ? match[1] : null;
+        }
+
+        function saveGoogleSheetsConfig() {
+            const sheetsUrl = document.getElementById('sheets-url').value.trim();
+            const sheetsGid = document.getElementById('sheets-gid').value.trim() || '0';
+
+            if (!sheetsUrl) {
+                showNotification('Google Sheets URL을 입력해주세요.', 'warning');
+                return;
+            }
+
+            const spreadsheetId = extractSpreadsheetId(sheetsUrl);
+            if (!spreadsheetId) {
+                showNotification('유효한 Google Sheets URL이 아닙니다.', 'error');
+                return;
+            }
+
+            localStorage.setItem('assetflow_sheets_url', sheetsUrl);
+            localStorage.setItem('assetflow_sheets_id', spreadsheetId);
+            localStorage.setItem('assetflow_sheets_gid', sheetsGid);
+
+            showNotification('Google Sheets 설정이 저장되었습니다.', 'success');
+        }
+
+        function loadGoogleSheetsConfig() {
+            // 기본 Google Sheets 설정 (사용자가 제공한 정보)
+            const DEFAULT_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1WaPPLxqlXbFBa4BnDAaZridaxgNR96OmQEqyP29M__w/edit?usp=sharing';
+            const DEFAULT_SHEETS_ID = '1WaPPLxqlXbFBa4BnDAaZridaxgNR96OmQEqyP29M__w';
+
+            let savedUrl = localStorage.getItem('assetflow_sheets_url');
+            let savedGid = localStorage.getItem('assetflow_sheets_gid');
+            const autoSyncEnabled = localStorage.getItem('assetflow_auto_sync') === 'true';
+
+            // 첫 실행 시 기본값 자동 설정
+            if (!savedUrl) {
+                savedUrl = DEFAULT_SHEETS_URL;
+                localStorage.setItem('assetflow_sheets_url', DEFAULT_SHEETS_URL);
+                localStorage.setItem('assetflow_sheets_id', DEFAULT_SHEETS_ID);
+                localStorage.setItem('assetflow_sheets_gid', '0');
+                console.log('✅ 기본 Google Sheets 설정이 자동으로 저장되었습니다.');
+            }
+
+            // UI에 값 표시
+            if (document.getElementById('sheets-url')) {
+                document.getElementById('sheets-url').value = savedUrl;
+            }
+            if (document.getElementById('sheets-gid') && savedGid) {
+                document.getElementById('sheets-gid').value = savedGid;
+            }
+            if (document.getElementById('auto-sync-toggle') && autoSyncEnabled) {
+                document.getElementById('auto-sync-toggle').checked = true;
+                startAutoSync();
+            }
+        }
+
+        async function loadFromGoogleSheets() {
+            showNotification('Google Sheets 데이터를 불러오는 중...', 'info');
+
+            // API 키 확인
+            if (!GOOGLE_SHEETS_CONFIG.apiKey || GOOGLE_SHEETS_CONFIG.apiKey === 'AIzaSyBJrLY_example_YOUR_API_KEY_HERE') {
+                showNotification('Google Sheets API Key가 설정되지 않았습니다.', 'error');
+                return;
+            }
+
+            try {
+                // 각 시트에서 JSON 데이터 로드 (병렬 처리) - Google Sheets API v4
+                const [strategiesData, allocationsData, etfPricesData] = await Promise.all([
+                    fetch(getGoogleSheetsAPIUrl(GOOGLE_SHEETS_CONFIG.sheets.strategies))
+                        .then(r => r.json()),
+                    fetch(getGoogleSheetsAPIUrl(GOOGLE_SHEETS_CONFIG.sheets.allocations))
+                        .then(r => r.json()),
+                    fetch(getGoogleSheetsAPIUrl(GOOGLE_SHEETS_CONFIG.sheets.etf_prices))
+                        .then(r => r.json())
+                ]);
+
+                // JSON 파싱 및 데이터 구조 변환
+                const newStrategies = parseStrategiesJSON(strategiesData);
+                const allocations = parseAllocationsJSON(allocationsData);
+                const newETFData = parseETFPricesJSON(etfPricesData);
+
+                // Allocations를 Strategies에 병합
+                Object.keys(allocations).forEach(strategyId => {
+                    if (newStrategies[strategyId]) {
+                        newStrategies[strategyId].etfs = allocations[strategyId];
+                        newStrategies[strategyId].allocation = allocations[strategyId];
+                    }
+                });
+
+                // 전역 변수 업데이트
+                localStrategies = newStrategies;
+                window.strategies = localStrategies;
+                localETFData = newETFData;
+
+                // localStorage에 백업 저장
+                saveLocalData();
+                updateDataStatus();
+                updateEndDateToLatest();
+
+                const summary = [];
+                if (Object.keys(newStrategies).length > 0) {
+                    summary.push(`${Object.keys(newStrategies).length}개 전략`);
+                }
+                if (Object.keys(newETFData).length > 0) {
+                    summary.push(`${Object.keys(newETFData).length}개 ETF`);
+                }
+
+                showNotification(`Google Sheets 동기화 완료: ${summary.join(', ')}`, 'success');
+
+            } catch (error) {
+                console.error('Google Sheets 데이터 로드 실패:', error);
+                showNotification('Google Sheets 데이터를 불러오는 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+
+        async function fetchGoogleSheetData(spreadsheetId, sheetName) {
+            // Use Google Sheets CSV export URL (works without API key if sheet is public)
+            const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`${sheetName} 시트를 불러올 수 없습니다. Google Sheets가 '링크가 있는 모든 사용자'로 공유되어 있는지 확인해주세요.`);
+            }
+
+            const csvText = await response.text();
+            return parseCSV(csvText);
+        }
+
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const result = [];
+
+            for (let line of lines) {
+                if (!line.trim()) continue;
+
+                // Simple CSV parser (handles quoted fields)
+                const row = [];
+                let currentField = '';
+                let inQuotes = false;
+
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+
+                    if (char === '"') {
+                        if (inQuotes && line[i + 1] === '"') {
+                            currentField += '"';
+                            i++; // Skip next quote
+                        } else {
+                            inQuotes = !inQuotes;
+                        }
+                    } else if (char === ',' && !inQuotes) {
+                        row.push(currentField);
+                        currentField = '';
+                    } else {
+                        currentField += char;
+                    }
+                }
+                row.push(currentField); // Add last field
+                result.push(row);
+            }
+
+            return result;
+        }
+
+        function parseGoogleSheetsData(strategiesData, allocationsData, etfData) {
+            let processedSections = 0;
+            let newStrategies = {};
+            let newETFData = {};
+
+            try {
+                // 1. Process Strategies
+                if (strategiesData && strategiesData.length > 1) {
+                    const headers = strategiesData[0];
+                    const requiredHeaders = ['id', 'name', 'creator', 'description', 'rebalancing', 'color'];
+
+                    if (requiredHeaders.every(header => headers.includes(header))) {
+                        for (let i = 1; i < strategiesData.length; i++) {
+                            const row = strategiesData[i];
+                            if (!row[0]) continue;
+
+                            const strategyId = row[headers.indexOf('id')];
+                            newStrategies[strategyId] = {
+                                name: row[headers.indexOf('name')],
+                                creator: row[headers.indexOf('creator')],
+                                description: row[headers.indexOf('description')],
+                                rebalancing: row[headers.indexOf('rebalancing')],
+                                color: row[headers.indexOf('color')],
+                                minStartDate: row[headers.indexOf('min_start_date')] || null,
+                                dataAvailableFrom: row[headers.indexOf('data_available_from')] || null,
+                                etfs: {},
+                                allocation: {}
+                            };
+                        }
+                        processedSections++;
+                    }
+                }
+
+                // 2. Process Allocations
+                if (allocationsData && allocationsData.length > 1) {
+                    const headers = allocationsData[0];
+                    const requiredHeaders = ['strategy_id', 'symbol', 'weight'];
+
+                    if (requiredHeaders.every(header => headers.includes(header))) {
+                        for (let i = 1; i < allocationsData.length; i++) {
+                            const row = allocationsData[i];
+                            if (!row[0]) continue;
+
+                            const strategyId = row[headers.indexOf('strategy_id')];
+                            const etfSymbol = row[headers.indexOf('symbol')];
+                            const weight = parseFloat(row[headers.indexOf('weight')]);
+
+                            if (newStrategies[strategyId]) {
+                                newStrategies[strategyId].etfs[etfSymbol] = weight;
+                                newStrategies[strategyId].allocation[etfSymbol] = weight;
+                            }
+                        }
+                        processedSections++;
+                    }
+                }
+
+                // 3. Process ETF Data
+                if (etfData && etfData.length > 1) {
+                    const headers = etfData[0];
+                    const requiredHeaders = ['symbol', 'date', 'price'];
+
+                    if (requiredHeaders.every(header => headers.includes(header))) {
+                        for (let i = 1; i < etfData.length; i++) {
+                            const row = etfData[i];
+                            if (!row[0]) continue;
+
+                            const symbol = row[headers.indexOf('symbol')];
+                            const date = row[headers.indexOf('date')];
+                            const price = parseFloat(row[headers.indexOf('price')]);
+                            const volume = row[headers.indexOf('volume')] ? parseFloat(row[headers.indexOf('volume')]) : 0;
+
+                            if (!newETFData[symbol]) {
+                                newETFData[symbol] = [];
+                            }
+
+                            newETFData[symbol].push({
+                                date: date,
+                                price: price,
+                                volume: volume
+                            });
+                        }
+
+                        // Sort by date
+                        Object.keys(newETFData).forEach(symbol => {
+                            newETFData[symbol].sort((a, b) => new Date(a.date) - new Date(b.date));
+                        });
+
+                        processedSections++;
+                    }
+                }
+
+                // Save data
+                if (processedSections > 0) {
+                    if (Object.keys(newStrategies).length > 0) {
+                        localStrategies = { ...localStrategies, ...newStrategies };
+                        window.strategies = localStrategies;
+                    }
+
+                    if (Object.keys(newETFData).length > 0) {
+                        localETFData = { ...localETFData, ...newETFData };
+                    }
+
+                    saveLocalData();
+
+                    const summary = [];
+                    if (Object.keys(newStrategies).length > 0) {
+                        summary.push(`${Object.keys(newStrategies).length}개 전략`);
+                    }
+                    if (Object.keys(newETFData).length > 0) {
+                        summary.push(`${Object.keys(newETFData).length}개 ETF`);
+                    }
+
+                    return {
+                        success: true,
+                        message: `Google Sheets 동기화 완료: ${summary.join(', ')}`
+                    };
+                } else {
+                    return {
+                        success: false,
+                        message: '처리할 수 있는 데이터가 없습니다. 시트명과 형식을 확인해주세요.'
+                    };
+                }
+            } catch (error) {
+                console.error('Google Sheets 데이터 파싱 오류:', error);
+                return {
+                    success: false,
+                    message: '데이터 처리 중 오류가 발생했습니다: ' + error.message
+                };
+            }
+        }
+
+        function toggleAutoSync(enabled) {
+            localStorage.setItem('assetflow_auto_sync', enabled ? 'true' : 'false');
+            const statusText = document.getElementById('sync-status-text');
+
+            if (enabled) {
+                statusText.textContent = '활성화 (5분마다 동기화)';
+                startAutoSync();
+                showNotification('자동 동기화가 활성화되었습니다.', 'success');
+            } else {
+                statusText.textContent = '비활성화';
+                stopAutoSync();
+                showNotification('자동 동기화가 비활성화되었습니다.', 'info');
+            }
+        }
+
+        function startAutoSync() {
+            stopAutoSync(); // Clear any existing interval
+
+            autoSyncInterval = setInterval(async () => {
+                console.log('자동 동기화 실행 중...');
+                const sheetsUrl = document.getElementById('sheets-url').value.trim();
+                if (sheetsUrl) {
+                    await loadFromGoogleSheets();
+                }
+            }, 5 * 60 * 1000); // 5 minutes
+
+            console.log('자동 동기화 시작됨');
+        }
+
+        function stopAutoSync() {
+            if (autoSyncInterval) {
+                clearInterval(autoSyncInterval);
+                autoSyncInterval = null;
+                console.log('자동 동기화 중지됨');
+            }
+        }
+        // ========== End Google Sheets Integration ==========
+
         function getEffectiveRebalancing(strategy, userChoice) {
             if (userChoice && userChoice !== '') {
                 return userChoice; // 사용자 선택이 우선
@@ -4743,13 +5473,25 @@
             appState.darkMode = isDarkMode;
             const toggle = document.getElementById('dark-mode-toggle');
             const body = document.body;
-            
+
             if (isDarkMode) {
                 body.classList.remove('light-mode');
                 toggle.classList.add('active');
             } else {
                 body.classList.add('light-mode');
                 toggle.classList.remove('active');
+            }
+
+            // ⭐ 차트 다시 그리기 - 색상 업데이트를 위해 필수!
+            const currentScreen = localStorage.getItem('assetflow_current_screen');
+            if (currentScreen === 'analysis' && selectedStrategies.length > 0) {
+                // 분석 화면에 있고 전략이 선택되어 있으면 차트 다시 그리기
+                if (typeof createComparisonChart === 'function') {
+                    createComparisonChart();
+                }
+                if (typeof createPortfolioCharts === 'function') {
+                    createPortfolioCharts();
+                }
             }
         }
         
@@ -5594,12 +6336,18 @@
                 endDateInput.addEventListener('change', updateDateRangeInfo);
             }
 
+            // Load Google Sheets config from localStorage
+            loadGoogleSheetsConfig();
+
             // 페이지 새로고침 시 이전 화면 상태 복원
             restoreScreenState();
         });
 
         // 화면 상태 복원 함수
-        function restoreScreenState() {
+        async function restoreScreenState() {
+            // 🔗 Google Sheets 데이터 우선 로드 (실패 시 localStorage로 폴백)
+            await loadDataFromGoogleSheets();
+
             // 먼저 선택된 전략을 복원
             loadSelectedStrategies();
 
@@ -6015,7 +6763,7 @@
 
             // 시작일이 종료일보다 늦은 경우
             if (start >= end) {
-                showNotification('시작월은 종료월보다 빨라야 합니다.', 'warning');
+                showNotification('시작 월은 종료 월보다 빨라야 합니다.', 'warning');
                 // 종료월을 시작월 + 1년으로 자동 조정
                 const newEndDate = new Date(start);
                 newEndDate.setFullYear(start.getFullYear() + 1);
@@ -6027,14 +6775,14 @@
 
             // 시작일이 너무 미래인 경우
             if (start > today) {
-                showNotification('시작월은 오늘 이전이어야 합니다.', 'warning');
+                showNotification('시작 월은 오늘 이전이어야 합니다.', 'warning');
                 startDateInput.value = '2020-01';
                 return;
             }
 
             // 종료일이 너무 미래인 경우
             if (end > today) {
-                showNotification('종료월은 오늘 이전이어야 합니다.', 'warning');
+                showNotification('종료 월은 오늘 이전이어야 합니다.', 'warning');
                 const currentYear = today.getFullYear();
                 const currentMonth = String(today.getMonth() + 1).padStart(2, '0');
                 endDateInput.value = `${currentYear}-${currentMonth}`;
@@ -7256,7 +8004,7 @@
                                     minRotation: 0
                                 },
                                 grid: {
-                                    color: isDarkMode ? '#2D333B' : '#F1F3F5'
+                                    color: isDarkMode ? '#2D333B' : '#D1D5DB'
                                 }
                             },
                             y: {
@@ -7266,7 +8014,7 @@
                                     font: { size: isMobile ? 10 : 12 }
                                 },
                                 grid: {
-                                    color: isDarkMode ? '#2D333B' : '#F1F3F5'
+                                    color: isDarkMode ? '#2D333B' : '#D1D5DB'
                                 },
                                 title: {
                                     display: true,
@@ -7475,10 +8223,55 @@
             });
         }
 
+        // ETF 심볼로 자산군 추측하는 헬퍼 함수
+        function guessETFCategory(symbol) {
+            // 일반적인 ETF 명명 규칙 기반 추측
+            const upperSymbol = symbol.toUpperCase();
+
+            // 주식 ETF
+            if (['VTI', 'SPY', 'VOO', 'QQQ', 'IWM', 'VTV', 'VUG', 'VIG'].includes(upperSymbol)) {
+                return '미국 주식';
+            }
+            if (['VEA', 'VWO', 'VXUS', 'EFA', 'EEM', 'IEFA'].includes(upperSymbol)) {
+                return '해외 주식';
+            }
+
+            // 채권 ETF
+            if (['BND', 'AGG', 'BNDX', 'VGIT', 'VCIT', 'VCSH', 'VCLT'].includes(upperSymbol)) {
+                return '미국 채권';
+            }
+            if (['TLT', 'TLH', 'EDV', 'VGLT'].includes(upperSymbol)) {
+                return '장기 국채';
+            }
+            if (['IEF', 'IEI', 'VGIT'].includes(upperSymbol)) {
+                return '중기 국채';
+            }
+            if (['SHY', 'SHV', 'VGSH', 'BIL'].includes(upperSymbol)) {
+                return '단기 국채';
+            }
+
+            // 부동산/원자재/금
+            if (['VNQ', 'VNQI', 'IYR', 'SCHH', 'RWR'].includes(upperSymbol)) {
+                return '부동산';
+            }
+            if (['GLD', 'IAU', 'SGOL', 'GLDM'].includes(upperSymbol)) {
+                return '금';
+            }
+            if (['DBC', 'GSG', 'USCI', 'PDBC', 'GCC'].includes(upperSymbol)) {
+                return '원자재';
+            }
+            if (['SLV', 'PSLV'].includes(upperSymbol)) {
+                return '은';
+            }
+
+            // 기본값
+            return 'ETF';
+        }
+
         function createAllocationLegend(allocation) {
             const legend = document.createElement('div');
             legend.className = 'allocation-legend';
-            
+
             if (!allocation || Object.keys(allocation).length === 0) {
                 const item = document.createElement('div');
                 item.className = 'legend-item';
@@ -7504,10 +8297,14 @@
 
                 const label = document.createElement('span');
                 const info = etfInfo[asset];
+
+                // ⭐ 모든 ETF를 동일한 형식으로 표시: "ETF명 (자산군): 비율%"
                 if (info) {
                     label.innerHTML = `<strong>${asset}</strong> (${info.category}): ${roundTo5Percent(percentage)}%`;
                 } else {
-                    label.textContent = `${asset}: ${roundTo5Percent(percentage)}%`;
+                    // info가 없어도 동일한 형식으로 표시
+                    const category = guessETFCategory(asset);
+                    label.innerHTML = `<strong>${asset}</strong> (${category}): ${roundTo5Percent(percentage)}%`;
                 }
 
                 // ETF 정보 클릭 이벤트
